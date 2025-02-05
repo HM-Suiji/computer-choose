@@ -1,0 +1,82 @@
+import { usePartStore } from '@/stores'
+import { useState } from 'react'
+import { Form } from '@heroui/form'
+import { Input } from '@heroui/input'
+import { Button } from '@heroui/button'
+import { Select, SelectItem } from '@heroui/select'
+import { partType as partTypeList, PartType, Part } from '@/types'
+
+export const PartForm: React.FC<{
+	type?: PartType
+	name?: string
+	price?: number
+	onSubmit?: (part: Part) => void
+}> = ({
+	type: defaultPartType = partTypeList[0],
+	name: defaultPartName = '',
+	price: defaultPartPrice = 0,
+	onSubmit: defaultOnSubmit,
+}) => {
+	const addPart = usePartStore((state) => state.addPart)
+	const [partType, setPartType] = useState<PartType>(defaultPartType)
+	const [partName, setPartName] = useState<string>(defaultPartName)
+	const [partPrice, setPartPrice] = useState<number>(defaultPartPrice)
+
+	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault()
+		if (defaultOnSubmit) {
+			return defaultOnSubmit({
+				type: partType,
+				name: partName,
+				price: partPrice,
+			})
+		}
+		addPart({ type: partType, name: partName, price: partPrice })
+		setPartName(defaultPartName)
+		setPartPrice(defaultPartPrice)
+	}
+
+	return (
+		<Form
+			className="w-full max-w-xs"
+			validationBehavior="native"
+			onSubmit={onSubmit}>
+			<Select
+				isRequired
+				errorMessage="请选择配件类型"
+				className="max-w-xs"
+				name="partType"
+				label="配件类型"
+				defaultSelectedKeys={[defaultPartType]}
+				value={partType}
+				onChange={(e) => setPartType(e.target.value as PartType)}>
+				{partTypeList.map((type) => (
+					<SelectItem key={type}>{type}</SelectItem>
+				))}
+			</Select>
+			<Input
+				isRequired
+				errorMessage="请输入配件名称"
+				value={partName}
+				onChange={(e) => setPartName(e.target.value)}
+				label="配件名称"
+				name="partName"
+				placeholder="配件名称"
+			/>
+			<Input
+				isRequired
+				min={0}
+				errorMessage="请输入配件价格"
+				value={partPrice.toString()}
+				onChange={(e) => setPartPrice(Number(e.target.value))}
+				label="配件价格"
+				name="partPrice"
+				placeholder="配件价格"
+				type="number"
+			/>
+			<Button type="submit" variant="bordered">
+				确认
+			</Button>
+		</Form>
+	)
+}
