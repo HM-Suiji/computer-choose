@@ -5,12 +5,14 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
 }
 
 export interface Part {
+	id: string
 	type: PartType
 	name: string
 	price: number
 }
 
 export interface Scheme {
+	id: string
 	name: string
 	parts: Record<PartType, (Part & { quantity: number })[]>
 }

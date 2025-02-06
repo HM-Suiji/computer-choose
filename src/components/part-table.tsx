@@ -17,10 +17,10 @@ import { Part } from '@/types'
 import { useEffect, useMemo, useState } from 'react'
 
 const PartAction: React.FC<{
-	partName: string
-	deletePart: (partName: string) => void
-	editPart: (partName: string) => void
-}> = ({ partName, deletePart, editPart }) => (
+	partId: string
+	deletePart: (partId: string) => void
+	editPart: (partId: string) => void
+}> = ({ partId, deletePart, editPart }) => (
 	<>
 		<Popover placement="bottom" showArrow={true}>
 			<PopoverTrigger>
@@ -29,13 +29,13 @@ const PartAction: React.FC<{
 			<PopoverContent>
 				<div className="px-1 py-2 flex flex-col items-center gap-1">
 					<div className="font-bold">你确定要删除吗</div>
-					<Button color="danger" size="sm" onPress={() => deletePart(partName)}>
+					<Button color="danger" size="sm" onPress={() => deletePart(partId)}>
 						确定
 					</Button>
 				</div>
 			</PopoverContent>
 		</Popover>
-		<Button onPress={() => editPart(partName)} color="primary" variant="light">
+		<Button onPress={() => editPart(partId)} color="primary" variant="light">
 			编辑
 		</Button>
 	</>
@@ -44,15 +44,15 @@ const PartAction: React.FC<{
 const PartEditModal: React.FC = () => {
 	const isOpen = usePartModalStore((state) => state.isOpen)
 	const onOpenChange = usePartModalStore((state) => state.onOpenChange)
-	const partName = usePartModalStore((state) => state.partName)
+	const partId = usePartModalStore((state) => state.partId)
 	const parts = usePartStore((state) => state.parts)
 	const editPart = usePartStore((state) => state.editPart)
 	const part = useMemo(
-		() => parts.find((part) => part.name === partName)!,
-		[partName, parts]
+		() => parts.find((part) => part.id === partId)!,
+		[partId, parts]
 	)
 	const onSubmit = (part: Part) => {
-		editPart(partName, part)
+		editPart(partId, part)
 		onOpenChange(false)
 	}
 
@@ -60,10 +60,10 @@ const PartEditModal: React.FC = () => {
 		<Modal isOpen={isOpen} onOpenChange={onOpenChange}>
 			<ModalContent>
 				<ModalHeader className="flex flex-col gap-1">
-					编辑配件：{partName}
+					编辑配件：{partId}
 				</ModalHeader>
 				<ModalBody>
-					<PartForm {...part} onSubmit={onSubmit} />
+					<PartForm part={part} onSubmit={onSubmit} />
 				</ModalBody>
 			</ModalContent>
 		</Modal>
@@ -77,7 +77,7 @@ export const PartTable: React.FC = () => {
 	const pages = Math.ceil(parts.length / rowsPerPage)
 	const deletePart = usePartStore((state) => state.deletePart)
 	const onOpenChange = usePartModalStore((state) => state.onOpenChange)
-	const setPartName = usePartModalStore((state) => state.setPartName)
+	const setPartId = usePartModalStore((state) => state.setPartId)
 	const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
 		column: '',
 		direction: 'ascending',
@@ -101,9 +101,9 @@ export const PartTable: React.FC = () => {
 		return sortedItems.slice(start, end)
 	}, [page, sortedItems])
 
-	const editPart = (partName: string) => {
+	const editPart = (partId: string) => {
 		onOpenChange(true)
-		setPartName(partName)
+		setPartId(partId)
 	}
 
 	useEffect(() => {
@@ -143,13 +143,13 @@ export const PartTable: React.FC = () => {
 				</TableHeader>
 				<TableBody items={items} emptyContent={'暂无配件，请添加数据。'}>
 					{(part) => (
-						<TableRow key={part.name}>
+						<TableRow key={part.id}>
 							<TableCell>{part.type}</TableCell>
 							<TableCell>{part.name}</TableCell>
 							<TableCell>{part.price}</TableCell>
 							<TableCell>
 								<PartAction
-									partName={part.name}
+									partId={part.id}
 									deletePart={deletePart}
 									editPart={editPart}
 								/>

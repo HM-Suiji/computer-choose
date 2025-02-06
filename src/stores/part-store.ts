@@ -5,7 +5,7 @@ import { persist } from 'zustand/middleware'
 interface State {
 	parts: Part[]
 	addPart: (part: Part) => void
-	deletePart: (partName: string) => void
+	deletePart: (id: string) => void
 	editPart: (partName: string, part: Part) => void
 }
 
@@ -14,14 +14,14 @@ const usePartStore = create<State>()(
 		(set) => ({
 			parts: [],
 			addPart: (part) => set((state) => ({ parts: [...state.parts, part] })),
-			deletePart: (partName) =>
+			deletePart: (id) =>
 				set((state) => ({
-					parts: state.parts.filter((part) => part.name !== partName),
+					parts: state.parts.filter((part) => part.id !== id),
 				})),
-			editPart: (partName, part) =>
+			editPart: (partId, part) =>
 				set((state) => {
 					const cur_parts = state.parts.concat()
-					const index = cur_parts.findIndex((part) => part.name === partName)
+					const index = cur_parts.findIndex((part) => part.id === partId)
 					cur_parts[index] = part
 					return {
 						parts: cur_parts,

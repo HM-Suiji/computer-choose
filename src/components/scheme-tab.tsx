@@ -26,6 +26,7 @@ const PartEditor: React.FC<{
 			setNewScheme((prev) => {
 				if (!prev) return prev
 				return {
+					id: prev.id,
 					name: prev.name,
 					parts: {
 						...prev.parts,
@@ -41,13 +42,11 @@ const PartEditor: React.FC<{
 				<Chip
 					className="cursor-pointer"
 					onClick={() => {
-						setChoosePart((_prev) => {
-							return [_part]
-						})
+						setChoosePart([_part])
 					}}
-					key={_part.name}
+					key={_part.id}
 					color={
-						choosePart?.some((part) => part.name === _part.name)
+						choosePart?.some((part) => part.id === _part.id)
 							? 'primary'
 							: 'default'
 					}>
@@ -91,7 +90,7 @@ export const SchemeTab: React.FC = () => {
 	const handleFinishEdit = () => {
 		setIsEditing(!isEditing)
 		if (newScheme) {
-			updateScheme(newScheme.name, newScheme)
+			updateScheme(newScheme.id, newScheme)
 		}
 	}
 
@@ -102,13 +101,14 @@ export const SchemeTab: React.FC = () => {
 				onSelectionChange={(key) => {
 					setIsEditing(false)
 					setNewScheme({
-						name: key as string,
+						id: key as string,
+						name: schemes?.find((scheme) => scheme.id === key)?.name!,
 						//@ts-ignore
-						parts: schemes?.find((scheme) => scheme.name === key)?.parts || {},
+						parts: schemes?.find((scheme) => scheme.id === key)?.parts || {},
 					})
 				}}>
 				{schemes.map((scheme, i) => (
-					<Tab key={scheme.name} title={scheme.name}>
+					<Tab key={scheme.id} title={scheme.name}>
 						<Card>
 							<CardHeader className="flex justify-between">
 								<p>{scheme.name}</p>
@@ -130,7 +130,7 @@ export const SchemeTab: React.FC = () => {
 														/>
 													) : (
 														scheme.parts[type]?.map((part) => (
-															<div key={part.name}>
+															<div key={part.id}>
 																{part.name} - {part.price}
 															</div>
 														))
@@ -152,7 +152,7 @@ export const SchemeTab: React.FC = () => {
 												<Button
 													color="danger"
 													size="sm"
-													onPress={() => deleteScheme(scheme.name)}>
+													onPress={() => deleteScheme(scheme.id)}>
 													确定
 												</Button>
 											</div>

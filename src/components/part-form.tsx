@@ -6,16 +6,23 @@ import { Button } from '@heroui/button'
 import { Select, SelectItem } from '@heroui/select'
 import { partType as partTypeList, PartType, Part } from '@/types'
 import { toast } from 'react-toastify'
+import { v4 as uuid } from 'uuid'
 
 export const PartForm: React.FC<{
-	type?: PartType
-	name?: string
-	price?: number
+	part?: Part
 	onSubmit?: (part: Part) => void
 }> = ({
-	type: defaultPartType = partTypeList[0],
-	name: defaultPartName = '',
-	price: defaultPartPrice = 0,
+	part: {
+		id: defaultPartId,
+		type: defaultPartType,
+		name: defaultPartName,
+		price: defaultPartPrice,
+	} = {
+		id: uuid(),
+		type: partTypeList[0],
+		name: '',
+		price: 0,
+	},
 	onSubmit: defaultOnSubmit,
 }) => {
 	const addPart = usePartStore((state) => state.addPart)
@@ -28,6 +35,7 @@ export const PartForm: React.FC<{
 		e.preventDefault()
 		if (defaultOnSubmit) {
 			return defaultOnSubmit({
+				id: defaultPartId,
 				type: partType,
 				name: partName,
 				price: partPrice,
@@ -38,7 +46,12 @@ export const PartForm: React.FC<{
 				autoClose: 2000,
 			})
 		}
-		addPart({ type: partType, name: partName, price: partPrice })
+		addPart({
+			id: defaultPartId,
+			type: partType,
+			name: partName,
+			price: partPrice,
+		})
 		setPartName(defaultPartName)
 		setPartPrice(defaultPartPrice)
 	}

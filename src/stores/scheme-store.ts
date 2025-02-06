@@ -1,6 +1,7 @@
 import { Scheme } from '@/types'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { v4 as uuid } from 'uuid'
 
 interface State {
 	schemes: Scheme[]
@@ -18,6 +19,7 @@ const useSchemeStore = create<State>()(
 					schemes: [
 						...state.schemes,
 						{
+							id: uuid(),
 							name: '方案' + (state.schemes.length + 1),
 							parts: {
 								CPU: [],
@@ -35,15 +37,15 @@ const useSchemeStore = create<State>()(
 						},
 					],
 				})),
-			updateScheme: (schemeName, updatedScheme) =>
+			updateScheme: (schemeId, updatedScheme) =>
 				set((state) => ({
 					schemes: state.schemes.map((scheme) =>
-						scheme.name === schemeName ? updatedScheme : scheme
+						scheme.id === schemeId ? updatedScheme : scheme
 					),
 				})),
-			deleteScheme: (schemeName) =>
+			deleteScheme: (schemeId) =>
 				set((state) => ({
-					schemes: state.schemes.filter((scheme) => scheme.name !== schemeName),
+					schemes: state.schemes.filter((scheme) => scheme.id !== schemeId),
 				})),
 		}),
 		{
