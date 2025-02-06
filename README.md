@@ -1,50 +1,82 @@
-# Vite & HeroUI Template
+# 电脑价格计算器 💻💰
 
-This is a template for creating applications using Vite and HeroUI (v2).
+## 简介
 
-[Try it on CodeSandbox](https://githubbox.com/frontio-ai/vite-template)
+本项目是一个基于 React、Vite 和 HeroUI 的 Web 应用程序，旨在帮助用户轻松搞定电脑配件的价格和配置方案！🚀 你可以尽情添加、编辑、删除配件，还能创建多个配置方案进行对比，找出最划算的组合！🧮😁
 
-## Technologies Used
+## 技术栈
 
-- [Vite](https://vitejs.dev/guide/)
-- [HeroUI](https://heroui.com)
-- [Tailwind CSS](https://tailwindcss.com)
-- [Tailwind Variants](https://tailwind-variants.org)
-- [TypeScript](https://www.typescriptlang.org)
-- [Framer Motion](https://www.framer.com/motion)
+- **前端框架:** React ⚛️
+- **构建工具:** Vite ⚡
+- **UI 组件库:** HeroUI 🦸
+- **状态管理:** Zustand 💾
+- **路由:** React Router DOM 🧭
+- **图表:** Recharts 📊
+- **样式:** Tailwind CSS 🎨
 
-## How to Use
+## 功能
 
-To clone the project, run the following command:
+- **配件管理:**
+  - 添加新配件 (类型、名称、价格)➕
+  - 编辑现有配件 ✏️
+  - 删除配件 🗑️
+- **方案管理:**
+  - 创建新的配置方案 ✨
+  - 在方案中添加/移除配件 ➕➖
+  - 删除配置方案 🗑️
+  - 编辑方案 ✏️
+- **价格展示:**
+  - 表格显示所有配件及其价格 📈
+  - 饼图显示每个方案中不同类型配件的价格占比 🥧
+- **数据持久化:** 使用 Zustand 的 `persist` 中间件将配件和方案数据存储在 `localStorage`，再也不怕数据丢失啦！💾
 
-```bash
-git clone https://github.com/frontio-ai/vite-template.git
-```
+## 快速开始
 
-### Install dependencies
+1. **安装依赖:**
 
-You can use one of them `npm`, `yarn`, `pnpm`, `bun`, Example using `npm`:
+   ```bash
+   npm install
+   # 或
+   pnpm install
+   # 或
+   yarn
+   ```
 
-```bash
-npm install
-```
+2. **运行开发服务器:**
 
-### Run the development server
+   ```bash
+   npm run dev
+   # 或
+   pnpm dev
+   #or
+   yarn dev
+   ```
 
-```bash
-npm run dev
-```
+3. **构建生产版本:**
 
-### Setup pnpm (optional)
+   ```bash
+   npm run build
+   # 或
+   pnpm build
+   # 或
+   yarn build
+   ```
 
-If you are using `pnpm`, you need to add the following code to your `.npmrc` file:
+## 组件说明
 
-```bash
-public-hoist-pattern[]=*@heroui/*
-```
+- `PartForm`: 用于添加和编辑配件的表单。
 
-After modifying the `.npmrc` file, you need to run `pnpm install` again to ensure that the dependencies are installed correctly.
+- `PartTable`: 以表格形式展示所有配件，并提供删除和编辑操作。
+- `PartEditModal`: 编辑零件时弹出的对话框。
+- `PieChart`: 根据提供的`data`绘制饼图。
+- `SchemeTab`: 允许用户在不同的电脑配置方案之间切换，并进行编辑和删除操作。
+- `PartEditor`: 在`SchemeTab`内部使用，允许用户为特定类型的配件选择一个方案。
+- `Navbar`: 应用程序的导航栏。
 
-## License
+## 开发者
 
-Licensed under the [MIT license](https://github.com/frontio-ai/vite-template/blob/main/LICENSE).
+- [HM-Suiji](https://github.com/HM-Suiji) 😎
+
+## 许可证
+
+[MIT License](LICENSE)
