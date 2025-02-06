@@ -62,6 +62,15 @@
    yarn build
    ```
 
+### Deploy with Vercel
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/HM-Suiji/computer-choose&repository-name=computer-choose)
+
+- 也可以部署在 [cli](https://vercel.com/docs/cli):
+  `vercel deploy`
+- 本地提供服务: `vercel dev`
+- Vercel _功能_ [限制](https://vercel.com/docs/functions/limitations) (with _Edge_ runtime)
+
 ## 组件说明
 
 - `PartForm`: 用于添加和编辑配件的表单。
