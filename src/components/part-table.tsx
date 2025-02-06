@@ -128,7 +128,10 @@ export const PartTable: React.FC = () => {
 							onChange={(page) => setPage(page)}
 						/>
 					</div>
-				}>
+				}
+				classNames={{
+					wrapper: 'h-[30rem]',
+				}}>
 				<TableHeader>
 					<TableColumn key="type" allowsSorting>
 						配件类型

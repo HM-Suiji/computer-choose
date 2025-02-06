@@ -4,10 +4,13 @@ import { Button } from '@heroui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@heroui/popover'
 import { useEffect, useMemo, useState } from 'react'
 import { Chip } from '@heroui/chip'
+import { Checkbox } from '@heroui/checkbox'
 import { PieChart } from './pie-chart'
 import { Part, PartType, partType, Scheme } from '@/types'
 import { groupBy } from '@/utils/group-by'
 import { usePartStore, useSchemeStore } from '@/stores'
+import { PencilIcon } from './icons'
+import clsx from 'clsx'
 
 const PartEditor: React.FC<{
 	partType: PartType
@@ -16,6 +19,7 @@ const PartEditor: React.FC<{
 	setNewScheme: React.Dispatch<React.SetStateAction<Scheme | undefined>>
 }> = ({ partType, parts, scheme_parts, setNewScheme }) => {
 	const [choosePart, setChoosePart] = useState<Part[]>()
+	const [allowsChoices, setAllowsChoices] = useState(scheme_parts.length > 1)
 
 	useEffect(() => {
 		setChoosePart(scheme_parts)
@@ -37,22 +41,34 @@ const PartEditor: React.FC<{
 		}
 	}, [choosePart])
 	return (
-		<div className="flex flex-wrap gap-2">
-			{parts?.map((_part) => (
-				<Chip
-					className="cursor-pointer"
-					onClick={() => {
-						setChoosePart([_part])
-					}}
-					key={_part.id}
-					color={
-						choosePart?.some((part) => part.id === _part.id)
-							? 'primary'
-							: 'default'
-					}>
-					{_part.name} - {_part.price}
-				</Chip>
-			))}
+		<div className="flex justify-between gap-4">
+			<div className="flex flex-wrap gap-2">
+				{parts?.map((_part) => (
+					<Chip
+						className="cursor-pointer"
+						onClick={() => {
+							if (allowsChoices)
+								return setChoosePart((prev) => {
+									if (!prev) return prev
+									return prev.some((part) => part.id === _part.id)
+										? prev.filter((part) => part.id !== _part.id)
+										: [...prev, _part]
+								})
+							setChoosePart([_part])
+						}}
+						key={_part.id}
+						color={
+							choosePart?.some((part) => part.id === _part.id)
+								? 'primary'
+								: 'default'
+						}>
+						{_part.name} - {_part.price}
+					</Chip>
+				))}
+			</div>
+			<Checkbox isSelected={allowsChoices} onValueChange={setAllowsChoices}>
+				多选
+			</Checkbox>
 		</div>
 	)
 }
@@ -112,7 +128,12 @@ export const SchemeTab: React.FC = () => {
 						<Card>
 							<CardHeader className="flex justify-between">
 								<p>{scheme.name}</p>
-								{isEditing && '编辑ing'}
+								<PencilIcon
+									className={clsx(
+										'h-6 w-6 mx-2 mt-2 opacity-0 transition-opacity duration-250 ease-out',
+										isEditing && 'opacity-100'
+									)}
+								/>
 							</CardHeader>
 							<CardBody>
 								<div className="grid grid-cols-3 gap-4">
