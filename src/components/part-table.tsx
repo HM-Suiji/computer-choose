@@ -62,7 +62,7 @@ const PartEditModal: React.FC = () => {
 		<Modal isOpen={isOpen} onOpenChange={onOpenChange}>
 			<ModalContent>
 				<ModalHeader className="flex flex-col gap-1">
-					编辑配件：{part.name}
+					编辑配件：{part?.name || ''}
 				</ModalHeader>
 				<ModalBody>
 					<PartForm part={part} onSubmit={onSubmit} />

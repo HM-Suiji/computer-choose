@@ -106,13 +106,13 @@ export const SchemeTab: React.FC = () => {
 	}, [schemes])
 
 	const handleFinishEdit = () => {
-		setIsEditing(!isEditing)
 		if (!isEditing && !newSchemeName) {
 			setNewSchemeName(newScheme?.name!)
 		}
 		if (isEditing && newScheme) {
 			updateScheme(newScheme.id, { ...newScheme, name: newSchemeName })
 		}
+		setIsEditing(!isEditing)
 	}
 
 	return (

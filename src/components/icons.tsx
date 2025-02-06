@@ -19,7 +19,7 @@ export const Logo: React.FC<IconSvgProps> = ({
 			r="95"
 			fill="#f0f4f8"
 			stroke="#3b82f6"
-			stroke-width="10"
+			strokeWidth="10"
 		/>
 		<rect
 			x="50"
@@ -29,7 +29,7 @@ export const Logo: React.FC<IconSvgProps> = ({
 			rx="10"
 			fill="#ffffff"
 			stroke="#4a5568"
-			stroke-width="4"
+			strokeWidth="4"
 		/>
 		<rect
 			x="40"
@@ -39,7 +39,7 @@ export const Logo: React.FC<IconSvgProps> = ({
 			rx="8"
 			fill="#e2e8f0"
 			stroke="#4a5568"
-			stroke-width="4"
+			strokeWidth="4"
 		/>
 		<line
 			x1="45"
@@ -47,8 +47,8 @@ export const Logo: React.FC<IconSvgProps> = ({
 			x2="155"
 			y2="125"
 			stroke="#4A5568"
-			stroke-width="2"
-			stroke-linecap="round"
+			strokeWidth="2"
+			strokeLinecap="round"
 		/>
 		<line
 			x1="45"
@@ -56,8 +56,8 @@ export const Logo: React.FC<IconSvgProps> = ({
 			x2="155"
 			y2="135"
 			stroke="#4A5568"
-			stroke-width="2"
-			stroke-linecap="round"
+			strokeWidth="2"
+			strokeLinecap="round"
 		/>
 		<line
 			x1="45"
@@ -65,16 +65,16 @@ export const Logo: React.FC<IconSvgProps> = ({
 			x2="105"
 			y2="145"
 			stroke="#4A5568"
-			stroke-width="2"
-			stroke-linecap="round"
+			strokeWidth="2"
+			strokeLinecap="round"
 		/>
 		<path
 			d="M120 70L140 50V90L120 70Z"
 			fill="#68d391"
 			stroke="#38a169"
-			stroke-width="3"
+			strokeWidth="3"
 		/>
-		<text x="127" y="75" font-family="Arial" font-size="12" fill="#ffffff">
+		<text x="127" y="75" fontFamily="Arial" fontSize="12" fill="#ffffff">
 			¥
 		</text>
 		<line
@@ -83,8 +83,8 @@ export const Logo: React.FC<IconSvgProps> = ({
 			x2="90"
 			y2="80"
 			stroke="#3b82f6"
-			stroke-width="4"
-			stroke-linecap="round"
+			strokeWidth="4"
+			strokeLinecap="round"
 		/>
 		<line
 			x1="80"
@@ -92,8 +92,8 @@ export const Logo: React.FC<IconSvgProps> = ({
 			x2="80"
 			y2="90"
 			stroke="#3b82f6"
-			stroke-width="4"
-			stroke-linecap="round"
+			strokeWidth="4"
+			strokeLinecap="round"
 		/>
 	</svg>
 )
@@ -111,9 +111,9 @@ export const PencilIcon: React.FC<IconSvgProps> = ({
 		viewBox="0 0 24 24"
 		fill="none"
 		stroke="currentColor"
-		stroke-width="2"
-		stroke-linecap="round"
-		stroke-linejoin="round"
+		strokeWidth="2"
+		strokeLinecap="round"
+		strokeLinejoin="round"
 		className="lucide lucide-pencil"
 		{...props}>
 		<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
