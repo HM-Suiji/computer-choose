@@ -5,6 +5,7 @@ import { Input } from '@heroui/input'
 import { Button } from '@heroui/button'
 import { Select, SelectItem } from '@heroui/select'
 import { partType as partTypeList, PartType, Part } from '@/types'
+import { toast } from 'react-toastify'
 
 export const PartForm: React.FC<{
 	type?: PartType
@@ -18,6 +19,7 @@ export const PartForm: React.FC<{
 	onSubmit: defaultOnSubmit,
 }) => {
 	const addPart = usePartStore((state) => state.addPart)
+	const parts = usePartStore((state) => state.parts)
 	const [partType, setPartType] = useState<PartType>(defaultPartType)
 	const [partName, setPartName] = useState<string>(defaultPartName)
 	const [partPrice, setPartPrice] = useState<number>(defaultPartPrice)
@@ -29,6 +31,11 @@ export const PartForm: React.FC<{
 				type: partType,
 				name: partName,
 				price: partPrice,
+			})
+		}
+		if (parts.find((part) => part.name === partName)) {
+			return toast.error('该配件已存在', {
+				autoClose: 2000,
 			})
 		}
 		addPart({ type: partType, name: partName, price: partPrice })

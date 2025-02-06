@@ -1,0 +1,23 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景圆形 -->
+  <circle cx="100" cy="100" r="95" fill="#f0f4f8" stroke="#3b82f6" stroke-width="10" />
+
+  <!-- 电脑屏幕 -->
+  <rect x="50" y="40" width="100" height="70" rx="10" fill="#ffffff" stroke="#4a5568"
+    stroke-width="4" />
+
+  <!-- 键盘 -->
+  <rect x="40" y="115" width="120" height="40" rx="8" fill="#e2e8f0" stroke="#4a5568"
+    stroke-width="4" />
+  <line x1="45" y1="125" x2="155" y2="125" stroke="#4A5568" stroke-width="2" stroke-linecap="round" />
+  <line x1="45" y1="135" x2="155" y2="135" stroke="#4A5568" stroke-width="2" stroke-linecap="round" />
+  <line x1="45" y1="145" x2="105" y2="145" stroke="#4A5568" stroke-width="2" stroke-linecap="round" />
+
+  <!-- 价格标签 -->
+  <path d="M120 70L140 50V90L120 70Z" fill="#68d391" stroke="#38a169" stroke-width="3" />
+  <text x="127" y="75" font-family="Arial" font-size="12" fill="#ffffff">¥</text>
+
+  <!-- 计算器加号 -->
+  <line x1="70" y1="80" x2="90" y2="80" stroke="#3b82f6" stroke-width="4" stroke-linecap="round" />
+  <line x1="80" y1="70" x2="80" y2="90" stroke="#3b82f6" stroke-width="4" stroke-linecap="round" />
+</svg>

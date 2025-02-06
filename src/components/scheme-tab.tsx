@@ -35,23 +35,27 @@ const PartEditor: React.FC<{
 			})
 		}
 	}, [choosePart])
-	return parts?.map((_part) => (
-		<Chip
-			className="cursor-pointer"
-			onClick={() => {
-				setChoosePart((_prev) => {
-					return [_part]
-				})
-			}}
-			key={_part.name}
-			color={
-				choosePart?.some((part) => part.name === _part.name)
-					? 'primary'
-					: 'default'
-			}>
-			{_part.name} - {_part.price}
-		</Chip>
-	))
+	return (
+		<div className="flex flex-wrap gap-2">
+			{parts?.map((_part) => (
+				<Chip
+					className="cursor-pointer"
+					onClick={() => {
+						setChoosePart((_prev) => {
+							return [_part]
+						})
+					}}
+					key={_part.name}
+					color={
+						choosePart?.some((part) => part.name === _part.name)
+							? 'primary'
+							: 'default'
+					}>
+					{_part.name} - {_part.price}
+				</Chip>
+			))}
+		</div>
+	)
 }
 
 export const SchemeTab: React.FC = () => {

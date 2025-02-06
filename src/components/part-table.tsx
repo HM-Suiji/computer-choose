@@ -7,11 +7,14 @@ import {
 	TableColumn,
 	TableRow,
 	TableCell,
+	SortDescriptor,
 } from '@heroui/table'
 import { Popover, PopoverTrigger, PopoverContent } from '@heroui/popover'
 import { Modal, ModalContent, ModalHeader, ModalBody } from '@heroui/modal'
+import { Pagination } from '@heroui/pagination'
 import { PartForm } from './part-form'
 import { Part } from '@/types'
+import { useEffect, useMemo, useState } from 'react'
 
 const PartAction: React.FC<{
 	partName: string
@@ -44,7 +47,10 @@ const PartEditModal: React.FC = () => {
 	const partName = usePartModalStore((state) => state.partName)
 	const parts = usePartStore((state) => state.parts)
 	const editPart = usePartStore((state) => state.editPart)
-	const part = parts.find((part) => part.name === partName)!
+	const part = useMemo(
+		() => parts.find((part) => part.name === partName)!,
+		[partName, parts]
+	)
 	const onSubmit = (part: Part) => {
 		editPart(partName, part)
 		onOpenChange(false)
@@ -64,28 +70,79 @@ const PartEditModal: React.FC = () => {
 	)
 }
 
+const rowsPerPage = 6
 export const PartTable: React.FC = () => {
+	const [page, setPage] = useState(1)
 	const parts = usePartStore((state) => state.parts)
+	const pages = Math.ceil(parts.length / rowsPerPage)
 	const deletePart = usePartStore((state) => state.deletePart)
 	const onOpenChange = usePartModalStore((state) => state.onOpenChange)
 	const setPartName = usePartModalStore((state) => state.setPartName)
+	const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
+		column: '',
+		direction: 'ascending',
+	})
+
+	const sortedItems = useMemo(() => {
+		return [...parts].sort((a, b) => {
+			const first = a[sortDescriptor.column as keyof Part]
+			const second = b[sortDescriptor.column as keyof Part]
+			if (first < second)
+				return sortDescriptor.direction === 'ascending' ? -1 : 1
+			if (first > second)
+				return sortDescriptor.direction === 'ascending' ? 1 : -1
+			return 0
+		})
+	}, [sortDescriptor, parts])
+
+	const items = useMemo(() => {
+		const start = (page - 1) * rowsPerPage
+		const end = start + rowsPerPage
+		return sortedItems.slice(start, end)
+	}, [page, sortedItems])
 
 	const editPart = (partName: string) => {
 		onOpenChange(true)
 		setPartName(partName)
 	}
 
+	useEffect(() => {
+		setPage(1)
+	}, [sortDescriptor])
+
 	return (
 		<>
-			<Table aria-label="Part Table">
+			<Table
+				aria-label="Part Table"
+				sortDescriptor={sortDescriptor}
+				onSortChange={setSortDescriptor}
+				bottomContent={
+					<div className="flex w-full justify-center">
+						<Pagination
+							isCompact
+							showControls
+							showShadow
+							color="primary"
+							page={page}
+							total={pages}
+							onChange={(page) => setPage(page)}
+						/>
+					</div>
+				}>
 				<TableHeader>
-					<TableColumn>配件类型</TableColumn>
-					<TableColumn>配件名称</TableColumn>
-					<TableColumn>价格</TableColumn>
+					<TableColumn key="type" allowsSorting>
+						配件类型
+					</TableColumn>
+					<TableColumn key="name" allowsSorting>
+						配件名称
+					</TableColumn>
+					<TableColumn key="price" allowsSorting>
+						价格
+					</TableColumn>
 					<TableColumn>操作</TableColumn>
 				</TableHeader>
-				<TableBody>
-					{parts.map((part) => (
+				<TableBody items={items} emptyContent={'暂无配件，请添加数据。'}>
+					{(part) => (
 						<TableRow key={part.name}>
 							<TableCell>{part.type}</TableCell>
 							<TableCell>{part.name}</TableCell>
@@ -98,7 +155,7 @@ export const PartTable: React.FC = () => {
 								/>
 							</TableCell>
 						</TableRow>
-					))}
+					)}
 				</TableBody>
 			</Table>
 			<PartEditModal />
