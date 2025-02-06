@@ -21,10 +21,15 @@ const PartAction: React.FC<{
 	deletePart: (partId: string) => void
 	editPart: (partId: string) => void
 }> = ({ partId, deletePart, editPart }) => (
-	<>
+	<div className="flex gap-2">
+		<Button onPress={() => editPart(partId)} color="primary" variant="ghost">
+			编辑
+		</Button>
 		<Popover placement="bottom" showArrow={true}>
 			<PopoverTrigger>
-				<Button color="danger">删除</Button>
+				<Button color="danger" variant="faded">
+					删除
+				</Button>
 			</PopoverTrigger>
 			<PopoverContent>
 				<div className="px-1 py-2 flex flex-col items-center gap-1">
@@ -35,10 +40,7 @@ const PartAction: React.FC<{
 				</div>
 			</PopoverContent>
 		</Popover>
-		<Button onPress={() => editPart(partId)} color="primary" variant="light">
-			编辑
-		</Button>
-	</>
+	</div>
 )
 
 const PartEditModal: React.FC = () => {
@@ -60,7 +62,7 @@ const PartEditModal: React.FC = () => {
 		<Modal isOpen={isOpen} onOpenChange={onOpenChange}>
 			<ModalContent>
 				<ModalHeader className="flex flex-col gap-1">
-					编辑配件：{partId}
+					编辑配件：{part.name}
 				</ModalHeader>
 				<ModalBody>
 					<PartForm part={part} onSubmit={onSubmit} />

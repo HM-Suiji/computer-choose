@@ -11,6 +11,7 @@ import { groupBy } from '@/utils/group-by'
 import { usePartStore, useSchemeStore } from '@/stores'
 import { PencilIcon } from './icons'
 import clsx from 'clsx'
+import { Input } from '@heroui/input'
 
 const PartEditor: React.FC<{
 	partType: PartType
@@ -76,6 +77,7 @@ const PartEditor: React.FC<{
 export const SchemeTab: React.FC = () => {
 	const [isEditing, setIsEditing] = useState(false)
 	const [newScheme, setNewScheme] = useState<Scheme>()
+	const [newSchemeName, setNewSchemeName] = useState('')
 
 	const schemes = useSchemeStore((state) => state.schemes)
 	const addScheme = useSchemeStore((state) => state.addScheme)
@@ -105,8 +107,11 @@ export const SchemeTab: React.FC = () => {
 
 	const handleFinishEdit = () => {
 		setIsEditing(!isEditing)
-		if (newScheme) {
-			updateScheme(newScheme.id, newScheme)
+		if (!isEditing && !newSchemeName) {
+			setNewSchemeName(newScheme?.name!)
+		}
+		if (isEditing && newScheme) {
+			updateScheme(newScheme.id, { ...newScheme, name: newSchemeName })
 		}
 	}
 
@@ -116,6 +121,7 @@ export const SchemeTab: React.FC = () => {
 				aria-label="Scheme Tabs"
 				onSelectionChange={(key) => {
 					setIsEditing(false)
+					if (key === '+') return addScheme()
 					setNewScheme({
 						id: key as string,
 						name: schemes?.find((scheme) => scheme.id === key)?.name!,
@@ -127,7 +133,15 @@ export const SchemeTab: React.FC = () => {
 					<Tab key={scheme.id} title={scheme.name}>
 						<Card>
 							<CardHeader className="flex justify-between">
-								<p>{scheme.name}</p>
+								{isEditing ? (
+									<Input
+										className="max-w-32"
+										defaultValue={scheme.name}
+										onValueChange={setNewSchemeName}
+									/>
+								) : (
+									<p>{scheme.name}</p>
+								)}
 								<PencilIcon
 									className={clsx(
 										'h-6 w-6 mx-2 mt-2 opacity-0 transition-opacity duration-250 ease-out',
@@ -189,13 +203,7 @@ export const SchemeTab: React.FC = () => {
 						</Card>
 					</Tab>
 				))}
-				<Tab
-					key="new"
-					title={
-						<Button className="bg-transparent" size="sm" onPress={addScheme}>
-							+
-						</Button>
-					}>
+				<Tab key="+" title="+">
 					<Card>
 						<CardBody>
 							<p>新方案</p>
