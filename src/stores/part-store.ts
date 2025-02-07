@@ -7,6 +7,7 @@ interface State {
 	addPart: (part: Part) => void
 	deletePart: (id: string) => void
 	editPart: (partName: string, part: Part) => void
+	clearParts: () => void
 }
 
 const usePartStore = create<State>()(
@@ -27,6 +28,7 @@ const usePartStore = create<State>()(
 						parts: cur_parts,
 					}
 				}),
+			clearParts: () => set({ parts: [] }),
 		}),
 		{
 			name: 'parts-storage',

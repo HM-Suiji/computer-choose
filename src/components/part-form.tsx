@@ -1,5 +1,5 @@
 import { usePartStore } from '@/stores'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Form } from '@heroui/form'
 import { Input } from '@heroui/input'
 import { Button } from '@heroui/button'
@@ -7,7 +7,8 @@ import { Select, SelectItem } from '@heroui/select'
 import { partType as partTypeList, PartType, Part, isPartArray } from '@/types'
 import { toast } from 'react-toastify'
 import { v4 as uuid } from 'uuid'
-import { parseCSV } from '@/utils/csv'
+import { generateCSV, parseCSV } from '@/utils/csv'
+import { Popover, PopoverContent, PopoverTrigger } from '@heroui/popover'
 
 export const PartForm: React.FC<{
 	part?: Part
@@ -28,6 +29,7 @@ export const PartForm: React.FC<{
 }) => {
 	const addPart = usePartStore((state) => state.addPart)
 	const parts = usePartStore((state) => state.parts)
+	const clearParts = usePartStore((state) => state.clearParts)
 	const [partType, setPartType] = useState<PartType>(defaultPartType)
 	const [partName, setPartName] = useState<string>(defaultPartName)
 	const [partPrice, setPartPrice] = useState<number>(defaultPartPrice)
@@ -60,7 +62,6 @@ export const PartForm: React.FC<{
 	const onFileChoose = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0]
 		if (!file) return
-		//读文件
 		const reader = new FileReader()
 		reader.readAsText(file)
 		reader.onload = (e) => {
@@ -81,6 +82,26 @@ export const PartForm: React.FC<{
 			}
 		}
 	}
+
+	const onFileOutput = useCallback(() => {
+		const data = generateCSV(
+			parts.map((part) => ({
+				type: part.type,
+				name: part.name,
+				price: part.price,
+			}))
+		)
+		const blob = new Blob([data], { type: 'text/csv' })
+		const url = URL.createObjectURL(blob)
+		const a = document.createElement('a')
+		a.href = url
+		a.download = 'parts.csv'
+		a.click()
+		URL.revokeObjectURL(url)
+		toast.success('导出成功', {
+			autoClose: 2000,
+		})
+	}, [parts])
 
 	return (
 		<div className="w-full max-w-xs flex flex-col gap-4">
@@ -122,9 +143,27 @@ export const PartForm: React.FC<{
 					确认
 				</Button>
 			</Form>
-			<div>
-				<Input type="file" accept=".csv,.json" onInput={onFileChoose} />
-			</div>
+			{!defaultOnSubmit && (
+				<div className="flex flex-col gap-3">
+					<Input type="file" accept=".csv" onInput={onFileChoose} />
+					<Button color="secondary" onPress={onFileOutput}>
+						导出配件
+					</Button>
+					<Popover placement="bottom" showArrow={true}>
+						<PopoverTrigger>
+							<Button color="danger">删除所有配件</Button>
+						</PopoverTrigger>
+						<PopoverContent>
+							<div className="px-1 py-2 flex flex-col items-center gap-1">
+								<div className="font-bold">你确定要删除吗</div>
+								<Button color="danger" size="sm" onPress={clearParts}>
+									确定
+								</Button>
+							</div>
+						</PopoverContent>
+					</Popover>
+				</div>
+			)}
 		</div>
 	)
 }

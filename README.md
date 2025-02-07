@@ -20,8 +20,8 @@
   - 添加新配件 (类型、名称、价格)➕
   - 编辑现有配件 ✏️
   - 删除配件 🗑️
-  - 从文件导入配件
-  - 从文件导出配件（TODO）
+  - 从文件导入配件📁
+  - 从文件导出配件📤
 - **方案管理:**
   - 创建新的配置方案 ✨
   - 在方案中添加/移除配件 ➕➖
@@ -32,9 +32,23 @@
   - 饼图显示每个方案中不同类型配件的价格占比 🥧
 - **数据持久化:** 使用 Zustand 的 `persist` 中间件将配件和方案数据存储在 `localStorage`，再也不怕数据丢失啦！💾
 
+### 文件导入格式
+
+- **配件导入格式:** CSV 文件，首行为 `type,name,price`，下面每行一个配件，格式为`类型,名称,价格`，例如：
+
+  ```csv
+  type,name,price
+  CPU,9900x 散片,2660
+  CPU,9950x 盒装,3999
+  CPU,9950x 散片,3829
+  CPU,9800x3d 散片,4099
+  显卡,七彩虹 5080 ultra woc,10795
+  显卡,七彩虹 5080 火神 oc,13698
+  ```
+
 ## 快速开始
 
-1. **安装依赖:**
+1. **安装依赖:**📦
 
    ```bash
    npm install
@@ -42,19 +56,23 @@
    pnpm install
    # 或
    yarn
+   # 或
+   bun install
    ```
 
-2. **运行开发服务器:**
+2. **运行开发服务器:**🚀
 
    ```bash
    npm run dev
    # 或
    pnpm dev
-   #or
+   # 或
    yarn dev
+   # 或
+   bun dev
    ```
 
-3. **构建生产版本:**
+3. **构建生产版本:**🏗️
 
    ```bash
    npm run build
@@ -62,14 +80,29 @@
    pnpm build
    # 或
    yarn build
+   # 或
+   bun run build
    ```
 
-### Deploy with Vercel
+4. **启动生产服务器:**🌐
+
+   ```bash
+   npm run start
+   # 或
+   pnpm start
+   # 或
+   yarn start
+   # 或
+   bun run start
+   ```
+
+## 部署
+
+### 使用 Vercel 部署
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/HM-Suiji/computer-choose&repository-name=computer-choose)
 
-- 也可以部署在 [cli](https://vercel.com/docs/cli):
-  `vercel deploy`
+- 也可以部署在 [cli](https://vercel.com/docs/cli): `vercel deploy`
 - 本地提供服务: `vercel dev`
 - Vercel _功能_ [限制](https://vercel.com/docs/functions/limitations) (with _Edge_ runtime)
 
