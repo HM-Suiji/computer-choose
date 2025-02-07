@@ -32,3 +32,22 @@ export const partType = [
 ] as const
 
 export type PartType = (typeof partType)[number]
+
+export function isPartArray(
+	data: Record<string | number, string | number | boolean>[]
+) {
+	return (
+		Array.isArray(data) &&
+		data.every(
+			(item) =>
+				typeof item === 'object' &&
+				item !== null &&
+				'type' in item &&
+				'name' in item &&
+				'price' in item &&
+				typeof item.name === 'string' &&
+				typeof item.price === 'number' &&
+				Object.values(partType).includes(item.type as any)
+		)
+	)
+}

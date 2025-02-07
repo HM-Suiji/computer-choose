@@ -10,11 +10,10 @@ import {
 	SortDescriptor,
 } from '@heroui/table'
 import { Popover, PopoverTrigger, PopoverContent } from '@heroui/popover'
-import { Modal, ModalContent, ModalHeader, ModalBody } from '@heroui/modal'
 import { Pagination } from '@heroui/pagination'
-import { PartForm } from './part-form'
 import { Part } from '@/types'
 import { useEffect, useMemo, useState } from 'react'
+import { PartEditModal } from './part-edit-modal'
 
 const PartAction: React.FC<{
 	partId: string
@@ -42,35 +41,6 @@ const PartAction: React.FC<{
 		</Popover>
 	</div>
 )
-
-const PartEditModal: React.FC = () => {
-	const isOpen = usePartModalStore((state) => state.isOpen)
-	const onOpenChange = usePartModalStore((state) => state.onOpenChange)
-	const partId = usePartModalStore((state) => state.partId)
-	const parts = usePartStore((state) => state.parts)
-	const editPart = usePartStore((state) => state.editPart)
-	const part = useMemo(
-		() => parts.find((part) => part.id === partId)!,
-		[partId, parts]
-	)
-	const onSubmit = (part: Part) => {
-		editPart(partId, part)
-		onOpenChange(false)
-	}
-
-	return (
-		<Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-			<ModalContent>
-				<ModalHeader className="flex flex-col gap-1">
-					编辑配件：{part?.name || ''}
-				</ModalHeader>
-				<ModalBody>
-					<PartForm part={part} onSubmit={onSubmit} />
-				</ModalBody>
-			</ModalContent>
-		</Modal>
-	)
-}
 
 const rowsPerPage = 6
 export const PartTable: React.FC = () => {

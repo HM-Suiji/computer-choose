@@ -4,9 +4,10 @@ import { Form } from '@heroui/form'
 import { Input } from '@heroui/input'
 import { Button } from '@heroui/button'
 import { Select, SelectItem } from '@heroui/select'
-import { partType as partTypeList, PartType, Part } from '@/types'
+import { partType as partTypeList, PartType, Part, isPartArray } from '@/types'
 import { toast } from 'react-toastify'
 import { v4 as uuid } from 'uuid'
+import { parseCSV } from '@/utils/csv'
 
 export const PartForm: React.FC<{
 	part?: Part
@@ -56,47 +57,74 @@ export const PartForm: React.FC<{
 		setPartPrice(defaultPartPrice)
 	}
 
+	const onFileChoose = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0]
+		if (!file) return
+		//读文件
+		const reader = new FileReader()
+		reader.readAsText(file)
+		reader.onload = (e) => {
+			const str = (e.target?.result || '') as string
+			const data = parseCSV(str)
+			if (!data) return
+			if (isPartArray(data)) {
+				data.forEach((part) => {
+					addPart({ ...part, id: uuid() } as Part)
+				})
+				toast.success('导入成功', {
+					autoClose: 2000,
+				})
+			} else {
+				toast.error('文件格式错误', {
+					autoClose: 2000,
+				})
+			}
+		}
+	}
+
 	return (
-		<Form
-			className="w-full max-w-xs"
-			validationBehavior="native"
-			onSubmit={onSubmit}>
-			<Select
-				isRequired
-				errorMessage="请选择配件类型"
-				className="max-w-xs"
-				name="partType"
-				label="配件类型"
-				defaultSelectedKeys={[defaultPartType]}
-				value={partType}
-				onChange={(e) => setPartType(e.target.value as PartType)}>
-				{partTypeList.map((type) => (
-					<SelectItem key={type}>{type}</SelectItem>
-				))}
-			</Select>
-			<Input
-				isRequired
-				errorMessage="请输入配件名称"
-				value={partName}
-				onChange={(e) => setPartName(e.target.value)}
-				label="配件名称"
-				name="partName"
-				placeholder="配件名称"
-			/>
-			<Input
-				isRequired
-				min={0}
-				errorMessage="请输入配件价格"
-				value={partPrice.toString()}
-				onChange={(e) => setPartPrice(Number(e.target.value))}
-				label="配件价格"
-				name="partPrice"
-				placeholder="配件价格"
-				type="number"
-			/>
-			<Button type="submit" variant="bordered">
-				确认
-			</Button>
-		</Form>
+		<div className="w-full max-w-xs flex flex-col gap-4">
+			<Form validationBehavior="native" onSubmit={onSubmit}>
+				<Select
+					isRequired
+					errorMessage="请选择配件类型"
+					className="max-w-xs"
+					name="partType"
+					label="配件类型"
+					defaultSelectedKeys={[defaultPartType]}
+					value={partType}
+					onChange={(e) => setPartType(e.target.value as PartType)}>
+					{partTypeList.map((type) => (
+						<SelectItem key={type}>{type}</SelectItem>
+					))}
+				</Select>
+				<Input
+					isRequired
+					errorMessage="请输入配件名称"
+					value={partName}
+					onChange={(e) => setPartName(e.target.value)}
+					label="配件名称"
+					name="partName"
+					placeholder="配件名称"
+				/>
+				<Input
+					isRequired
+					min={0}
+					errorMessage="请输入配件价格"
+					value={partPrice.toString()}
+					onChange={(e) => setPartPrice(Number(e.target.value))}
+					label="配件价格"
+					name="partPrice"
+					placeholder="配件价格"
+					type="number"
+				/>
+				<Button type="submit" variant="bordered">
+					确认
+				</Button>
+			</Form>
+			<div>
+				<Input type="file" accept=".csv,.json" onInput={onFileChoose} />
+			</div>
+		</div>
 	)
 }

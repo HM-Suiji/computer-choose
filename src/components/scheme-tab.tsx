@@ -2,7 +2,7 @@ import { Tabs, Tab } from '@heroui/tabs'
 import { Card, CardBody, CardHeader } from '@heroui/card'
 import { Button } from '@heroui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@heroui/popover'
-import { useEffect, useMemo, useState } from 'react'
+import { Key, useCallback, useEffect, useMemo, useState } from 'react'
 import { Chip } from '@heroui/chip'
 import { Checkbox } from '@heroui/checkbox'
 import { PieChart } from './pie-chart'
@@ -12,6 +12,7 @@ import { usePartStore, useSchemeStore } from '@/stores'
 import { PencilIcon } from './icons'
 import clsx from 'clsx'
 import { Input } from '@heroui/input'
+import { toast } from 'react-toastify'
 
 const PartEditor: React.FC<{
 	partType: PartType
@@ -105,30 +106,33 @@ export const SchemeTab: React.FC = () => {
 		return res
 	}, [schemes])
 
-	const handleFinishEdit = () => {
-		if (!isEditing && !newSchemeName) {
-			setNewSchemeName(newScheme?.name!)
-		}
-		if (isEditing && newScheme) {
+	const handleEdit = useCallback(() => {
+		if (!isEditing && parts.length < 3)
+			toast('请先添加配件', { autoClose: 1500 })
+		if (!isEditing && !newSchemeName) setNewSchemeName(newScheme?.name!)
+		else if (isEditing && newScheme)
 			updateScheme(newScheme.id, { ...newScheme, name: newSchemeName })
-		}
+
 		setIsEditing(!isEditing)
-	}
+	}, [isEditing, newScheme, newSchemeName, parts])
+
+	const onSelectionChange = useCallback(
+		(key: Key) => {
+			setIsEditing(false)
+			if (key === '+') addScheme()
+			setNewScheme({
+				id: key as string,
+				name: schemes?.find((scheme) => scheme.id === key)?.name!,
+				//@ts-ignore
+				parts: schemes?.find((scheme) => scheme.id === key)?.parts || {},
+			})
+		},
+		[schemes]
+	)
 
 	return (
 		<div className="flex w-full flex-col">
-			<Tabs
-				aria-label="Scheme Tabs"
-				onSelectionChange={(key) => {
-					setIsEditing(false)
-					if (key === '+') return addScheme()
-					setNewScheme({
-						id: key as string,
-						name: schemes?.find((scheme) => scheme.id === key)?.name!,
-						//@ts-ignore
-						parts: schemes?.find((scheme) => scheme.id === key)?.parts || {},
-					})
-				}}>
+			<Tabs aria-label="Scheme Tabs" onSelectionChange={onSelectionChange}>
 				{schemes.map((scheme, i) => (
 					<Tab key={scheme.id} title={scheme.name}>
 						<Card>
@@ -195,7 +199,7 @@ export const SchemeTab: React.FC = () => {
 									</Popover>
 									<Button
 										color={isEditing ? 'default' : 'primary'}
-										onPress={handleFinishEdit}>
+										onPress={handleEdit}>
 										{isEditing ? '完成' : '编辑'}
 									</Button>
 								</div>

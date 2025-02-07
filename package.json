@@ -1,7 +1,7 @@
 {
   "name": "computer-choose",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -35,6 +35,8 @@
     "@react-stately/data": "^3.12.1",
     "@react-types/shared": "3.26.0",
     "clsx": "2.1.1",
+    "csv-parse": "^5.6.0",
+    "csv-stringify": "^6.5.2",
     "framer-motion": "^12.3.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
