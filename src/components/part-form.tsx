@@ -139,13 +139,19 @@ export const PartForm: React.FC<{
 					placeholder="配件价格"
 					type="number"
 				/>
-				<Button type="submit" variant="bordered">
+				<Button type="submit" variant="bordered" className="my-2">
 					确认
 				</Button>
 			</Form>
 			{!defaultOnSubmit && (
 				<div className="flex flex-col gap-3">
-					<Input type="file" accept=".csv" onInput={onFileChoose} />
+					<Input
+						label="导入部件"
+						labelPlacement="outside"
+						type="file"
+						accept=".csv"
+						onInput={onFileChoose}
+					/>
 					<Button color="secondary" onPress={onFileOutput}>
 						导出配件
 					</Button>

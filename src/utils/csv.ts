@@ -1,11 +1,14 @@
 import { parse } from 'csv-parse/browser/esm/sync'
-import { stringify } from 'csv-stringify/browser/esm/sync'
+import { Options, stringify } from 'csv-stringify/browser/esm/sync'
 
 export const generateCSV = <
 	T extends string | number,
 	K extends string | number | boolean,
 >(
-	data: Record<T, K>[]
+	data: Record<T, K>[],
+	options: Options = {
+		header: true,
+	}
 ) =>
 	stringify(
 		data.map((item) => {
@@ -17,9 +20,7 @@ export const generateCSV = <
 			}
 			return _item
 		}),
-		{
-			header: true,
-		}
+		options
 	)
 
 export const parseCSV = (data: string | Buffer) =>

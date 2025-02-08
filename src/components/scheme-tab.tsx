@@ -1,5 +1,5 @@
 import { Tabs, Tab } from '@heroui/tabs'
-import { Card, CardBody, CardHeader } from '@heroui/card'
+import { Card, CardBody, CardFooter, CardHeader } from '@heroui/card'
 import { Button } from '@heroui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@heroui/popover'
 import { Key, useCallback, useEffect, useMemo, useState } from 'react'
@@ -13,6 +13,7 @@ import { PencilIcon } from './icons'
 import clsx from 'clsx'
 import { Input } from '@heroui/input'
 import { toast } from 'react-toastify'
+import { generateCSV } from '@/utils/csv'
 
 const PartEditor: React.FC<{
 	partType: PartType
@@ -87,12 +88,15 @@ export const SchemeTab: React.FC = () => {
 	const parts = usePartStore((state) => state.parts)
 	const group_parts = useMemo(() => groupBy(parts, 'type'), [parts])
 	const scheme_data = useMemo(() => {
-		const res: { name: string; value: number }[][] = []
+		const res: { name: string; _name: string; value: number }[][] = []
 		for (const scheme of schemes) {
 			const _res: (typeof res)[number] = []
 			for (const partType in scheme.parts) {
 				_res.push({
 					name: partType,
+					_name: scheme.parts[partType as PartType]
+						.map((part) => part.name)
+						.join(' '),
 					//@ts-ignore
 					value: scheme.parts[partType].reduce(
 						//@ts-ignore
@@ -109,7 +113,7 @@ export const SchemeTab: React.FC = () => {
 	const handleEdit = useCallback(() => {
 		if (!isEditing && parts.length < 3)
 			toast('请先添加配件', { autoClose: 1500 })
-		if (!isEditing && !newSchemeName) setNewSchemeName(newScheme?.name!)
+		if (!isEditing) setNewSchemeName(newScheme?.name ?? '')
 		else if (isEditing && newScheme)
 			updateScheme(newScheme.id, { ...newScheme, name: newSchemeName })
 
@@ -129,6 +133,27 @@ export const SchemeTab: React.FC = () => {
 		},
 		[schemes]
 	)
+
+	const handleExport = (
+		data: { name: string; _name: string; value: number }[],
+		name: string
+	) => {
+		const sum = data.reduce((prev, curr) => prev + curr.value, 0)
+		const csv = generateCSV(
+			[...data, { name: '总计', _name: '', value: sum }].map((item) => ({
+				配件类型: item.name,
+				配件名称: item._name,
+				价格: item.value,
+			}))
+		)
+		const blob = new Blob([csv], { type: 'text/csv' })
+		const url = URL.createObjectURL(blob)
+		const link = document.createElement('a')
+		link.href = url
+		link.download = `方案-${name}.csv`
+		link.click()
+		URL.revokeObjectURL(url)
+	}
 
 	return (
 		<div className="flex w-full flex-col">
@@ -153,57 +178,60 @@ export const SchemeTab: React.FC = () => {
 									)}
 								/>
 							</CardHeader>
-							<CardBody>
-								<div className="grid grid-cols-3 gap-4">
-									<div className="flex flex-col gap-2 col-span-2">
-										{partType.map((type) => (
-											<div key={type} className="flex gap-4">
-												<div>{type}:</div>
-												<div className="flex flex-row gap-2">
-													{isEditing ? (
-														<PartEditor
-															partType={type}
-															parts={group_parts[type]}
-															scheme_parts={scheme.parts[type]}
-															setNewScheme={setNewScheme}
-														/>
-													) : (
-														scheme.parts[type]?.map((part) => (
-															<div key={part.id}>
-																{part.name} - {part.price}
-															</div>
-														))
-													)}
-												</div>
+							<CardBody className="grid grid-cols-3 gap-4">
+								<div className="flex flex-col gap-2 col-span-2">
+									{partType.map((type) => (
+										<div key={type} className="flex gap-4">
+											<div>{type}:</div>
+											<div className="flex flex-row gap-2">
+												{isEditing ? (
+													<PartEditor
+														partType={type}
+														parts={group_parts[type]}
+														scheme_parts={scheme.parts[type]}
+														setNewScheme={setNewScheme}
+													/>
+												) : (
+													scheme.parts[type]?.map((part) => (
+														<div key={part.id}>
+															{part.name} - {part.price}
+														</div>
+													))
+												)}
 											</div>
-										))}
-									</div>
-									<PieChart data={scheme_data[i]} />
+										</div>
+									))}
 								</div>
-								<div className="flex flex-row gap-2">
-									<Popover placement="bottom" showArrow={true}>
-										<PopoverTrigger>
-											<Button color="danger">删除</Button>
-										</PopoverTrigger>
-										<PopoverContent>
-											<div className="px-1 py-2 flex flex-col items-center gap-1">
-												<div className="font-bold">你确定要删除吗</div>
-												<Button
-													color="danger"
-													size="sm"
-													onPress={() => deleteScheme(scheme.id)}>
-													确定
-												</Button>
-											</div>
-										</PopoverContent>
-									</Popover>
-									<Button
-										color={isEditing ? 'default' : 'primary'}
-										onPress={handleEdit}>
-										{isEditing ? '完成' : '编辑'}
-									</Button>
-								</div>
+								<PieChart className="-mt-12" data={scheme_data[i]} />
 							</CardBody>
+							<CardFooter className="px-4 flex flex-row gap-2">
+								<Popover placement="bottom" showArrow={true}>
+									<PopoverTrigger>
+										<Button color="danger">删除</Button>
+									</PopoverTrigger>
+									<PopoverContent>
+										<div className="px-1 py-2 flex flex-col items-center gap-1">
+											<div className="font-bold">你确定要删除吗</div>
+											<Button
+												color="danger"
+												size="sm"
+												onPress={() => deleteScheme(scheme.id)}>
+												确定
+											</Button>
+										</div>
+									</PopoverContent>
+								</Popover>
+								<Button
+									color={isEditing ? 'default' : 'primary'}
+									onPress={handleEdit}>
+									{isEditing ? '完成' : '编辑'}
+								</Button>
+								<Button
+									color="success"
+									onPress={() => handleExport(scheme_data[i], scheme.name)}>
+									导出方案
+								</Button>
+							</CardFooter>
 						</Card>
 					</Tab>
 				))}

@@ -14,12 +14,13 @@ const COLORS = [
 	'#03A9F4',
 ]
 
-const MyPieChart: React.FC<{ data: { name: string; value: number }[] }> = ({
-	data,
-}) => {
+const MyPieChart: React.FC<{
+	data: { name: string; value: number }[]
+	className?: string
+}> = ({ data, className }) => {
 	const total = data.reduce((acc, curr) => acc + curr.value, 0)
 	return (
-		<PieChart width={400} height={400}>
+		<PieChart width={400} height={400} className={className}>
 			<Pie
 				data={data}
 				cx={200}
